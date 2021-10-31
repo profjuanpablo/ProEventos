@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProEventos.API.Data;
 using ProEventos.API.Models;
 
 namespace ProEventos.API.Controllers
@@ -12,39 +13,29 @@ namespace ProEventos.API.Controllers
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {
-        public EventoController(ILogger<EventoController> logger)
+        private readonly DataContext _context;
+        public EventoController(DataContext context)
         {
-        
+            _context = context;
+
         }
 
         [HttpGet]
-        public Evento Get()
-        {
-            return new Evento(){
-                EventoId = 1,
-                Tema = "Encontro Turma .NET",
-                Local = "1º Lote",
-                QtdPessoas = 250,
-                DataEvento= DateTime.Now.AddDays(2).ToString()
-            };
+        public IEnumerable<Evento> Get()
+            {
+                return _context.Eventos;
+            }
+
+       [HttpPut("{id}")]
+        public Evento GetById(int id){
+            return _context.Eventos.FirstOrDefault(
+                Evento => Evento.EventoId ==id
+                );
         }
 
         [HttpPost]
-        public string Post()
-        {
-            return "Agora tem o metodo POST";
+        public string Post(){
+            return "Exemplo de POst";
         }
-
-        [HttpPut("{id}")]
-        public string Put(int id)
-        {
-            return $"Agora tem o metodo PUT com o id = {id}";
-        }
-
-        [HttpDelete("{id}")]
-        public string Delete(int id)
-        {
-            return $"Agora tem o metodo Delete com o id = {id}";
-        }
-    }
+      }  
 }
